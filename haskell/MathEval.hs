@@ -18,9 +18,10 @@
 
 -- You need to support multiple levels of nested parentheses, ex. (2 / (2 + 3.33) * 4) - -6
 
+import Control.Arrow ((>>>))
 import Data.Foldable (for_)
-
 import Data.Function ((&))
+import Data.Functor ((<&>))
 import Data.List (elemIndex, elemIndices, findIndex, findIndices, isPrefixOf)
 import Test.Hspec
 import Text.Read (readMaybe)
@@ -77,11 +78,13 @@ solve s =
     & replace "-" "+!"
     & solveParens
 
--- TODO review this function, AI wrote it
 replace :: String -> String -> String -> String
-replace _ _ [] = []
+replace _ _ "" = "" -- end of recursion, empty string
 replace old new str@(x : xs)
-  | old `isPrefixOf` str = new ++ replace old new (drop (length old) str)
+  | old `isPrefixOf` str =
+      let suffix = drop (length old) str
+          suffix' = replace old new suffix -- recurse with shorter string
+       in new ++ suffix'
   | otherwise = x : replace old new xs
 
 solveNumber :: [Char] -> Double
@@ -106,10 +109,10 @@ solveMultiplication str =
    in product ns
 
 solveDivision :: [Char] -> Double
-solveDivision str =
-  let parts = splitOn '/' str
-      ns = map solveNumber parts
-   in foldl1 (/) ns
+solveDivision =
+  splitOn '/'
+    >>> map solveNumber
+    >>> foldl1 (/)
 
 solveParens :: [Char] -> Double
 solveParens str =
@@ -138,6 +141,6 @@ trisect str (i, j) =
    in (a, b, c)
 
 solveTriple :: (String, String, String) -> String
-solveTriple (a, b, c) = a ++ b' ++ c
+solveTriple (a, b, c) = a ++ f b ++ c
  where
-  b' = solveAddition b & show
+  f = solveAddition >>> show
