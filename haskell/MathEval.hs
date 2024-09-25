@@ -18,6 +18,7 @@
 
 -- You need to support multiple levels of nested parentheses, ex. (2 / (2 + 3.33) * 4) - -6
 
+import Control.Applicative ((<|>))
 import Control.Arrow ((>>>))
 import Data.Foldable (for_)
 import Data.Function ((&))
@@ -52,6 +53,7 @@ main = hspec $ do
       , ("2 / (2 + 3) * 4.33 - -6", 7.732)
       , ("12*-1", -12)
       , ("12* 123/-(-5 + 2)", 492)
+      , ("89.94/(67.61)-(40.25+(11.49))+(98.41)/((75.76/(18.26))*(41.73)/(23.24)*95.62)+92.68+-8.56*77.11/(--61.46*-2.79*(87.35)-71.62*73.35-67.57+11.24*27.72)*7.38*10.7*20.13*78.89/((73.45/(57.52+76.61+98.37-53.13)))/((-11.98)-(4.44))", -573.500021609947)
       ]
       $ \(arg, expected) -> do
         it (show arg) $ do
@@ -64,6 +66,8 @@ solve :: String -> Double
 solve s =
   s
     & filter (/= ' ')
+    & filter (/= '\n')
+    & filter (/= '\t')
     -- Handling '-' which can mean subtract (binary op) or negate (unary op)
     -- Negation is encoded as '!', and subtraction as '+!', so there are no '-'
     -- Double '-'
@@ -87,32 +91,20 @@ replace old new str@(x : xs)
        in new ++ suffix'
   | otherwise = x : replace old new xs
 
-solveNumber :: [Char] -> Double
+solveNumber :: String -> Double
 solveNumber "" = 0
 solveNumber ('!' : s) = -solveNumber s
 solveNumber s =
   let mn = readMaybe s
    in case mn of
         Just n -> n
-        Nothing -> error $ "Could not parse number: " ++ s
+        Nothing -> error $ "Could not parse number: \"" ++ s ++ "\""
 
 solveAddition :: [Char] -> Double
 solveAddition str =
   let parts = splitOn '+' str
-      ns = map solveMultiplication parts
+      ns = map solveFactors parts
    in sum ns
-
-solveMultiplication :: [Char] -> Double
-solveMultiplication str =
-  let parts = splitOn '*' str
-      ns = map solveDivision parts
-   in product ns
-
-solveDivision :: [Char] -> Double
-solveDivision =
-  splitOn '/'
-    >>> map solveNumber
-    >>> foldl1 (/)
 
 solveParens :: [Char] -> Double
 solveParens str =
@@ -144,3 +136,30 @@ solveTriple :: (String, String, String) -> String
 solveTriple (a, b, c) = a ++ f b ++ c
  where
   f = solveAddition >>> show
+
+getFactors :: String -> [String]
+getFactors s =
+  let i = elemIndex '*' s
+      j = elemIndex '/' s
+      k = min i j <|> i <|> j
+   in case k of
+        Nothing -> [s]
+        Just idx ->
+          let (a, b) = splitAt idx s
+           in a : [head b] : getFactors (drop 1 b)
+
+reduceFactors :: [String] -> Double
+reduceFactors [x, o, y] =
+  let x' = solveNumber x
+      y' = solveNumber y
+   in case o of
+        "*" -> x' * y'
+        "/" -> x' / y'
+reduceFactors [y] = solveNumber y
+reduceFactors (x : o : y : rest) =
+  let a = reduceFactors [x, o, y]
+      b = rest
+   in reduceFactors (show a : b)
+
+solveFactors :: String -> Double
+solveFactors = getFactors >>> reduceFactors
