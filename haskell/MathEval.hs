@@ -23,6 +23,7 @@ import Data.Foldable (for_)
 import Data.Function ((&))
 import Data.List (elemIndex, elemIndices, findIndex, findIndices, isPrefixOf)
 import Test.Hspec
+import Text.Read (readMaybe)
 
 splitOn :: Char -> String -> [String]
 splitOn _ "" = [""]
@@ -60,9 +61,21 @@ calc = solve
 
 solve :: String -> Double
 solve s =
-  let s' = filter (/= ' ') s
-      s'' = replace "--" "+" s'
-   in solveParens s''
+  s
+    & filter (/= ' ')
+    -- Handling '-' which can mean subtract (binary op) or negate (unary op)
+    -- Negation is encoded as '!', and subtraction as '+!', so there are no '-'
+    -- Double '-'
+    & replace "--" "+"
+    -- Single '-'
+    & replace "(-" "(!"
+    & replace ")-" ")+!"
+    & replace "*-" "*!"
+    & replace "+-" "+!"
+    & replace "/-" "/!"
+    -- Numbers follow by '-'
+    & replace "-" "+!"
+    & solveParens
 
 -- TODO review this function, AI wrote it
 replace :: String -> String -> String -> String
@@ -73,20 +86,18 @@ replace old new str@(x : xs)
 
 solveNumber :: [Char] -> Double
 solveNumber "" = 0
-solveNumber " " = 0
-solveNumber s = read s
+solveNumber ('!' : s) = -solveNumber s
+solveNumber s =
+  let mn = readMaybe s
+   in case mn of
+        Just n -> n
+        Nothing -> error $ "Could not parse number: " ++ s
 
 solveAddition :: [Char] -> Double
 solveAddition str =
   let parts = splitOn '+' str
-      ns = map solveSubtraction parts
-   in sum ns
-
-solveSubtraction :: [Char] -> Double
-solveSubtraction str =
-  let parts = splitOn '-' str
       ns = map solveMultiplication parts
-   in foldl1 (-) ns
+   in sum ns
 
 solveMultiplication :: [Char] -> Double
 solveMultiplication str =
