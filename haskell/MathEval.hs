@@ -54,6 +54,7 @@ main = hspec $ do
       , ("12*-1", -12)
       , ("12* 123/-(-5 + 2)", 492)
       , ("89.94/(67.61)-(40.25+(11.49))+(98.41)/((75.76/(18.26))*(41.73)/(23.24)*95.62)+92.68+-8.56*77.11/(--61.46*-2.79*(87.35)-71.62*73.35-67.57+11.24*27.72)*7.38*10.7*20.13*78.89/((73.45/(57.52+76.61+98.37-53.13)))/((-11.98)-(4.44))", -573.500021609947)
+      , ("(--54.51-(26.99)+33.64/(58.27))+--73.46/(24.61)*8.42+59.77/(79.21)-(--98.81+43.06)*--81.7-25.79+-86.76-55.77-55.89/(48.11)*74.69+-31.25/(4.23+((84.76*35.01+75.42)*66.01)*46.59*29.67-97.84-16.6/(69.75*-45.97))", -11791.882026648824)
       ]
       $ \(arg, expected) -> do
         it (show arg) $ do
@@ -68,18 +69,7 @@ solve s =
     & filter (/= ' ')
     & filter (/= '\n')
     & filter (/= '\t')
-    -- Handling '-' which can mean subtract (binary op) or negate (unary op)
-    -- Negation is encoded as '!', and subtraction as '+!', so there are no '-'
-    -- Double '-'
-    & replace "--" "+"
-    -- Single '-'
-    & replace "(-" "(!"
-    & replace ")-" ")+!"
-    & replace "*-" "*!"
-    & replace "+-" "+!"
-    & replace "/-" "/!"
-    -- Numbers follow by '-'
-    & replace "-" "+!"
+    & replaceAllHypens
     & solveParens
 
 replace :: String -> String -> String -> String
@@ -90,6 +80,30 @@ replace old new str@(x : xs)
           suffix' = replace old new suffix -- recurse with shorter string
        in new ++ suffix'
   | otherwise = x : replace old new xs
+
+replaceAllHypens :: String -> String
+replaceAllHypens s =
+  let s' =
+        s
+          -- Handling '-' which can mean subtract (binary op) or negate (unary op)
+          -- Negation is encoded as '!', and subtraction as '+!', so there are no '-'
+          & replace "---" "-"
+          -- Double '-'
+          & replace "(--" "(" -- TODO what a hack
+          & replace "*--" "*"
+          & replace "+--" "+"
+          & replace "/--" "/"
+          & replace "--" "+"
+          -- Single '-'
+          & replace "(-" "(!"
+          & replace ")-" ")+!"
+          & replace "*-" "*!"
+          & replace "+-" "+!"
+          & replace "/-" "/!"
+      s'' = if s == s' then s' else replaceAllHypens s'
+          -- Numbers follow by '-'
+      s''' = s'' & replace "-" "+!"
+   in s'''
 
 solveNumber :: String -> Double
 solveNumber "" = 0
