@@ -24,3 +24,5 @@ https://learnyouahaskell.github.io/chapters.html
 https://www.cis.upenn.edu/~cis1940/spring13/lectures.html
 
 https://www.cis.upenn.edu/~cis1940/spring13/final.html
+
+http://mightybyte.github.io/monad-challenges
