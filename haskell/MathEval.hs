@@ -94,7 +94,7 @@ evalExpression ts =
         [] -> n
         _ -> error $ "Trailing tokens: " ++ show ts'
 
--- Expression are composed of terms that are added or subtracted
+-- Expressions are composed of terms that are added or subtracted
 evalNextExpression :: [Token] -> (Double, [Token])
 evalNextExpression ts =
   let (termX, ts') = evalNextTerm ts
