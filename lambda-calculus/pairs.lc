@@ -1,0 +1,11 @@
+# Pair :: a -> b -> (a -> b -> c) -> c
+Pair = \ a b . \ choice . choice a b
+
+# first :: Pair a b -> a
+first = \ pair . pair (\ a b . a)
+
+# second :: Pair a b -> b
+second = \ pair . pair (\ a b . b)
+
+# swap :: Pair a b -> Pair b a
+swap = \ pair . pair(\ a b . Pair b a)

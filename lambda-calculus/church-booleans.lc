@@ -1,0 +1,15 @@
+TRUE  = \ a b . a
+FALSE = \ a b . b
+
+# not = \ a . a FALSE TRUE
+not = \ a . \ x y . a y x
+# Can we prove formally that these two forms are equivalent?
+# If we sub in TRUE and FALSE we get:
+# not = \ a . a (\ a b . a) (\ a b . b)
+# Eta reduction seems relevant, we there's no obvious way to apply it
+
+and = \ a b . a b a
+
+or  = \ a b . a a b
+
+xor = \ a b . a (not b) b

@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@codewars/lambda-calculus": "^1.1.0",
+    "chai": "^5.1.1"
+  }
+}
