@@ -15,17 +15,18 @@ def jump(origin):
 
 
 def count_jumps(n):
-    if n == 0:
-        return 0
-    destination = jump(n)
-    return count_jumps(destination) + 1
+    jumps = 0
+    while n > 0:
+        n = jump(n)
+        jumps += 1
+    return jumps
 
 
 def test_count_jumps():
     _test_count(count_jumps, 18, 2)
     _test_count(count_jumps, 19, 2)
     _test_count(count_jumps, 20, 3)
-    # _test_count(count_jumps_recursion, 1e8) // stack overflow
+    _test_count(count_jumps, 1e8)
 
 
 def _test_count(func, n, expected=None):
