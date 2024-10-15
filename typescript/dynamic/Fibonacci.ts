@@ -80,7 +80,7 @@ function fib_sliding_window_stack(n: number): number {
   let c = 1;
   let i = 2;
 
-  while (i <= n) {
+  while (i < n) {
     a = b + c;
     b = c + a;
     c = a + b;
@@ -98,14 +98,74 @@ function fib_sliding_window_stack(n: number): number {
   throw new Error("unreachable");
 }
 
-function testFib(f: (n: number) => number, i: number, o?: number) {
+/**
+ * ~100x slower than the 'little int' tabulation.
+ *
+ * Eats a butt load of memory, worse than linear.
+ */
+function fib_tab_big_int(n: number): bigint {
+  const table = [0n, 1n, 1n];
+
+  for (let i = 2; i <= n; i += 1) {
+    table[i] = table[i - 1] + table[i - 2];
+  }
+
+  return table[n];
+}
+
+/**
+ * Faster than above, still slower than 'little int' obv
+ */
+function fib_sw_big_int(n: number): bigint {
+  const window = [0n, 1n, 1n];
+
+  for (let i = 2; i <= n; i += 1) {
+    window[i % 3] = window[(i - 1) % 3] + window[(i - 2) % 3];
+  }
+
+  return window[n % 3];
+}
+
+/**
+ * Only marginally faster than the array above, which makes sense as bigints go
+ * on the heap so this isn't really stack-based.
+ */
+function fib_sw_st_big_int(n: number): bigint {
+  let a = 0n;
+  let b = 1n;
+  let c = 1n;
+  let i = 2;
+
+  while (i < n) {
+    a = b + c;
+    b = c + a;
+    c = a + b;
+    i += 3;
+  }
+
+  switch (n % 3) {
+    case 0:
+      return a;
+    case 1:
+      return b;
+    case 2:
+      return c;
+  }
+  throw new Error("unreachable");
+}
+
+function testFib(
+  f: (n: number) => number | bigint,
+  i: number,
+  o?: number | bigint
+) {
   if (o != null) {
     it(`${f.name}(${i}) should be ${o}`, () => {
       assert.equal(f(i), o);
     });
   } else {
     it(`${f.name}(${i}) should be a number`, () => {
-      assert.equal(typeof f(i), "number");
+      assert.nestedInclude(["bigint", "number"], typeof f(i));
     });
   }
 }
@@ -155,9 +215,43 @@ describe("Fibonacci", () => {
   testFib(fib_sliding_window_neg, 10e7); // 300ms
   // testFib(fib_sliding_window_neg, 10e8); // 2.9s
 
+  testFib(fib_sliding_window_stack, 0, 0);
+  testFib(fib_sliding_window_stack, 1, 1);
+  testFib(fib_sliding_window_stack, 2, 1);
+  testFib(fib_sliding_window_stack, 3, 2);
+  testFib(fib_sliding_window_stack, 4, 3);
+  testFib(fib_sliding_window_stack, 5, 5);
+  testFib(fib_sliding_window_stack, 6, 8);
   testFib(fib_sliding_window_stack, 12, 144);
   testFib(fib_sliding_window_stack, 16, 987);
   testFib(fib_sliding_window_stack, 10e7); // 76ms
   testFib(fib_sliding_window_stack, 10e8); // 750ms
   // testFib(fib_sliding_window_stack, 10e9); // 6.8s
+
+  testFib(fib_tab_big_int, 12, 144);
+  testFib(fib_tab_big_int, 16, 987);
+  testFib(fib_tab_big_int, 50, 12586269025);
+  testFib(fib_tab_big_int, 75, 2111485077978050); // pushing what a little int can handle
+  testFib(fib_tab_big_int, 100, 354224848179261915075n);
+  testFib(fib_tab_big_int, 10e3); // 2ms
+  testFib(fib_tab_big_int, 10e4); // 167ms
+  // testFib(fib_tab_big_int, 10e5); // slow, eats at least 16GB of memory and starts swapping
+
+  testFib(fib_sw_big_int, 12, 144);
+  testFib(fib_sw_big_int, 16, 987);
+  testFib(fib_sw_big_int, 50, 12586269025);
+  testFib(fib_sw_big_int, 75, 2111485077978050); // pushing what a little int can handle
+  testFib(fib_sw_big_int, 100, 354224848179261915075n);
+  testFib(fib_sw_big_int, 10e3); // 2ms
+  testFib(fib_sw_big_int, 10e4); // 138ms
+  // testFib(fib_sw_big_int, 10e5); // 9.4s
+
+  testFib(fib_sw_st_big_int, 12, 144);
+  testFib(fib_sw_st_big_int, 16, 987);
+  testFib(fib_sw_st_big_int, 50, 12586269025);
+  testFib(fib_sw_st_big_int, 75, 2111485077978050); // pushing what a little int can handle
+  testFib(fib_sw_st_big_int, 100, 354224848179261915075n);
+  testFib(fib_sw_st_big_int, 10e3); // 0.6ms
+  testFib(fib_sw_st_big_int, 10e4); // 101ms
+  // testFib(fib_sw_st_big_int, 10e5); // 9.0s
 });
