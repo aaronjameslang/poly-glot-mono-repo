@@ -14,6 +14,9 @@ def jump(origin):
         digits = (digits - digit) // 10
     return destination
 
+# I tried pre-allocating this table and it somehow made it slower
+# I don't know how else to speed this code up
+# Perhaps there's a mathematical solution
 table = [0]
 
 def count_jumps(n):
@@ -31,14 +34,18 @@ def count_jumpss(ns):
 def test_count_jumps():
     _test_count(count_jumps, 0, 0)
     _test_count(count_jumps, 1, 1)
+    _test_count(count_jumps, 2, 1)
+    _test_count(count_jumps, 3, 1)
+    _test_count(count_jumps, 9, 1)
+    _test_count(count_jumps, 10, 2)
     _test_count(count_jumps, 18, 2)
     _test_count(count_jumps, 19, 2)
     _test_count(count_jumps, 20, 3)
-    # _test_count(count_jumps, 1e8) # This is now very slow
-
+    _test_count(count_jumps, 1e7)
+    # _test_count(count_jumps, 1e8)  # This is now very slow
 
 def test_count_jumpss():
-    ns = [random.randint(0, int(1e5)) for _ in range(1000)]
+    ns = [random.randint(0, int(7e6)) for _ in range(1000)]
     _test_counts(count_jumpss, [18, 19, 20], [2, 2, 3])
     _test_counts(count_jumpss, ns)
 
