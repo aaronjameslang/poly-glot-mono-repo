@@ -17,8 +17,6 @@ function fib_recursion(n: number): number {
       return 0;
     case 1:
       return 1;
-    case 2:
-      return 1;
     default:
       return fib_recursion(n - 1) + fib_recursion(n - 2);
   }
@@ -34,7 +32,7 @@ function fib_recursion(n: number): number {
  * which will be slower.
  */
 function fib_tabulation(n: number): number {
-  const table = [0, 1, 1];
+  const table = [0, 1];
 
   for (let i = 2; i <= n; i += 1) {
     table[i] = table[i - 1] + table[i - 2];
@@ -69,9 +67,9 @@ function fib_sliding_window_neg(n: number): number {
 
 /**
  * Same as sliding window above, linear time, constant space, but avoids the heap.
- * 
+ *
  * By not using an array, all of our values are stored in the stack, which is faster.
- * 
+ *
  * This is more than 3x faster than the array-based sliding window implementation.
  */
 function fib_sliding_window_stack(n: number): number {
@@ -152,6 +150,17 @@ function fib_sw_st_big_int(n: number): bigint {
       return c;
   }
   throw new Error("unreachable");
+}
+
+/**
+ * Recusrion, but linear time and constant space.
+ * This function only calls itself once.
+ * Performance is comparable to the tabulation and sliding window implementations.
+ * Slower than the sliding window stack implementation.
+ */
+function fib_recursion_linear(n: number, acc = 0, last = 1) {
+  if (n === 0) return acc;
+  return fib_recursion_linear(n - 1, acc + last, acc);
 }
 
 function testFib(
@@ -254,4 +263,11 @@ describe("Fibonacci", () => {
   testFib(fib_sw_st_big_int, 10e3); // 0.6ms
   testFib(fib_sw_st_big_int, 10e4); // 101ms
   // testFib(fib_sw_st_big_int, 10e5); // 9.0s
+
+  testFib(fib_recursion_linear, 12, 144);
+  testFib(fib_recursion_linear, 16, 987);
+  testFib(fib_recursion_linear, 10e3); // 0.08ms
+  testFib(fib_recursion_linear, 10e4); // 0.25ms
+  testFib(fib_recursion_linear, 10e7); // 349ms
+  // testFib(fib_recursion_linear, 10e8); // 3.4ms
 });
