@@ -1,0 +1,34 @@
+
+# Quacky, piping f through g then h
+Q = \f g h . h (g f)
+
+I = \x . x
+K = \x y . x
+
+# Church Predecessor, AKA decrement
+# I took the standard definition and played with it,
+# I did not solve this from scratch
+dec = \ n f x . n (Q f) (K x) (I)
+pred = dec
+
+# if n = 3
+# then dec 3 f x =>
+# Q f (Q f (Q f (K x))) (I)
+# Q f (Q f      (T x))  (I)
+# Q f (T        (f x))  (I)
+# T          (f (f x))) (I)
+#            (f (f x)))
+
+# Q f (K x)
+# T x
+
+# Q f (T x)
+# T   (f x)
+
+# Q f (T (f x))
+# T   (f (f x))
+
+# T = \ a b . b a
+
+# It's the Kx that drops a level, if it was Tx it would be id
+# Also the final I unwraps the final thrush, if that were f it would also be id
