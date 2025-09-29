@@ -1,0 +1,19 @@
+#! /bin/sh
+set -eux
+
+ego=$(readlink -f "$0")
+dir=$(dirname "$ego")
+
+for file in "$dir"/*.hs; do
+    if [ "$file" = "$dir"/EquivalentDice.hs ]; then
+        continue
+    fi
+  runhaskell "$file"
+done
+
+for d in "$dir"/*/; do
+  if [ ! -d "$d" ]; then continue; fi
+  if ls "$d"/*.cabal 1> /dev/null 2>&1; then
+    (cd "$d" && cabal test)
+  fi
+done

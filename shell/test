@@ -1,0 +1,10 @@
+#! /bin/sh
+set -eux
+
+ego=$(readlink -f "$0")
+dir=$(dirname "$ego")
+
+for file in "$dir"/*; do
+  if [ "$file" = "$dir"/test ]; then continue; fi
+  "$file"
+done

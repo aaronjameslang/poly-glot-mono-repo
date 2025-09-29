@@ -1,0 +1,8 @@
+#! /bin/sh
+set -eux
+
+ego=$(readlink -f "$0")
+dir=$(dirname "$ego")
+cd "$dir"
+
+npx bun test ./*.ts
