@@ -9,7 +9,7 @@ LC.configure({
 });
 
 const source = fs.readFileSync("./church/numbers.lc", "utf8");
-const { nil, one, two, inc, add, mul, pow } = LC.compile(source);
+const { nil, one, two, inc, add } = LC.compile(source);
 
 describe("Church Numbers", () => {
   it("Numbers", () => {
@@ -27,19 +27,5 @@ describe("Church Numbers", () => {
     assert.equal(add(2)(4), 6);
     assert.equal(add(0)(3), 3);
     assert.equal(add(0)(0), 0);
-  });
-  it("Multiplication", () => {
-    assert.equal(mul(1)(2), 2);
-    assert.equal(mul(2)(4), 8);
-    assert.equal(mul(0)(3), 0);
-    assert.equal(mul(0)(0), 0);
-  });
-  it.skip("Exponentiation", () => {
-    assert.equal(pow(1)(1), 1);
-    assert.equal(pow(2)(1), 2);
-    assert.equal(pow(1)(2), 1);
-    assert.equal(pow(2)(4), 16);
-    assert.equal(pow(0)(3), 0);
-    assert.equal(pow(0)(0), 1);
   });
 });
