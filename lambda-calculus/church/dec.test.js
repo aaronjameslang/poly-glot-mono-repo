@@ -7,7 +7,7 @@ LC.configure({
   verbosity: "Concise",
 });
 
-const source = readLc("church/church-numbers", "church/dec");
+const source = readLc("church/numbers", "church/dec");
 const { dec } = LC.compile(source);
 
 describe("dec", () => {

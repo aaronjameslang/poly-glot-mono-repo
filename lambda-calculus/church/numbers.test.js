@@ -8,7 +8,7 @@ LC.configure({
   verbosity: "Concise",
 });
 
-const source = fs.readFileSync("./church/church-numbers.lc", "utf8");
+const source = fs.readFileSync("./church/numbers.lc", "utf8");
 const { nil, one, two, inc, add, mul, pow } = LC.compile(source);
 
 describe("Church Numbers", () => {

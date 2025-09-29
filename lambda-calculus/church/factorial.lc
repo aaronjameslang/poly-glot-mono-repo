@@ -1,0 +1,9 @@
+# factorialStep = \n . n == 0 ? 1 : (n * factorialStep (n-1))
+# factorialStep = \n . (isZero n) one (mul n (factorialStep (dec n)))
+factorialStep = \f n . (isZero n) one (mul n (f (dec n)))
+
+# I looked this (Y) up the other day, but this I wrote again from memory
+# I still need to do more playing with it to get intuition
+Y = \ f . (\x . f (x x)) (\x . f (x x))
+
+factorial = Y factorialStep

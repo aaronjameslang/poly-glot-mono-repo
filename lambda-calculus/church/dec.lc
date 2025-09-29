@@ -1,4 +1,3 @@
-
 # Quacky, piping f through g then h
 Q = \f g h . h (g f)
 

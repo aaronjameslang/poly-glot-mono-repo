@@ -1,0 +1,8 @@
+nil = \ f x. x # AKA false
+one = \ f x. f x
+two = \ f x. f (f x)
+
+TRUE  = \ a b . a
+FALSE = \ a b . b
+
+isZero = \ n . n (\_ . FALSE) TRUE

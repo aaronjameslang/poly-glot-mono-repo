@@ -4,7 +4,7 @@
  */
 
 import * as LC from "@codewars/lambda-calculus";
-import { unchurch } from "./unchurch";
+import { unchurchN } from "./unchurch";
 
 LC.configure({
   numEncoding: "Church",
@@ -47,7 +47,7 @@ function describeFromInt(num, lc) {
     });
     // TODO I don't know why this breaks for 0
     (num ? test : test.skip)(`${num}|fromInt|id|unchurch is ${num}`, () => {
-      const fn = unchurch(id(LC.fromInt(num)));
+      const fn = unchurchN(id(LC.fromInt(num)));
       expect(fn).toBe(num);
     });
     test(`${lc}|compile is a function`, () => {
@@ -63,7 +63,7 @@ function describeFromInt(num, lc) {
     // TODO I don't know why this breaks for 0
     (num ? test : test.skip)(`${lc}|compile|unchurch is ${num}`, () => {
       const { n } = LC.compile("n = " + lc);
-      const m = unchurch(n);
+      const m = unchurchN(n);
       expect(m).toBe(num);
     });
   });
