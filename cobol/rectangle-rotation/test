@@ -1,0 +1,10 @@
+#! /bin/sh
+set -eux
+
+cobc -m -Wall *.cbl
+cobc -x -Wall tests.cbl
+
+./tests
+
+rm -f *.dylib
+rm -f tests
