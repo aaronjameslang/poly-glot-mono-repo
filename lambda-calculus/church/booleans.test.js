@@ -9,7 +9,7 @@ LC.configure({
   verbosity: "Concise",
 });
 
-const source = fs.readFileSync("./church-booleans.lc", "utf8");
+const source = fs.readFileSync("./church/booleans.lc", "utf8");
 const { FALSE, TRUE, and, not, or, xor } = LC.compile(source);
 
 function unchurch(b) {
