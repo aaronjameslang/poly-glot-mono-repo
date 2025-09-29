@@ -1,0 +1,12 @@
+# I looked this (Y) up the other day, but this I wrote again from memory
+# I still need to do more playing with it to get intuition
+Y = \ f . (\x . f (x x)) (\x . f (x x))
+
+# step = f n => n == 0 ? 1 : (n * f (n-1))
+
+# Y step = (\x . step (x x)) (\x . step (x x))
+#                step ((\x . step (x x) (\x . step (x x))))
+#                step (Y step)
+#                step (step (step (step  ... (Y step) ... )))
+
+# step (Y step) n = n * (Y step n-1)

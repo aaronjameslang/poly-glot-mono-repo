@@ -1,0 +1,26 @@
+# isSquare = \ n i .
+#                 if (i^2 == n) TRUE
+#                 if (i^2 > n) FALSE
+#                 if (i^2 < n) isSquare n i+1
+
+sub = \ n m . m dec n
+
+lte = \n m . isZero( sub n m )
+
+eq = \n m . and (lte n m) (lte m n)
+
+# isSquare = \ i n . eq (mul i i) n TRUE
+#                   leq (mul i i) n (isSquare (inc i) n)
+#                                   FALSE
+# isSquare' = isSquare 0
+
+# How do I loop with an initial param like this?
+# I don't think Y does this naturally
+# Oh, I could pass the params as a pair?
+# Or actually I think it would just work as two params?
+
+step = \ f i n . eq (mul i i) n TRUE
+                lte (mul i i) n (f (inc i) n)
+                                FALSE
+
+isSquare = Y step 0
