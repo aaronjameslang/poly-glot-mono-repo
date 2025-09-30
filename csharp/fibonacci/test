@@ -1,0 +1,9 @@
+#! /bin/sh
+set -eux
+
+rm -rf bin obj
+
+dotnet run 10
+dotnet test
+
+rm -rf bin obj
