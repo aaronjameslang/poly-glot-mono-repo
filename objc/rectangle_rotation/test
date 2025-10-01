@@ -1,0 +1,7 @@
+#! /bin/sh
+
+clang -framework Foundation -fobjc-arc -o test.x ./*.m
+
+./test.x
+
+rm test.x
