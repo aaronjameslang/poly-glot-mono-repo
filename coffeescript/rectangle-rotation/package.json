@@ -1,0 +1,14 @@
+{
+  "name": "rectangle-rotation",
+  "version": "1.0.0",
+  "description": "Rectangle Rotation implementation in CoffeeScript",
+  "main": "solution.coffee",
+  "scripts": {
+    "test": "mocha --require coffeescript/register test.coffee"
+  },
+  "dependencies": {
+    "coffeescript": "^2.7.0",
+    "mocha": "^10.2.0",
+    "chai": "^4.3.7"
+  }
+}
