@@ -1,0 +1,19 @@
+#! /bin/sh
+set -eu
+
+OUTPUT_FILE="bundle.js"
+
+echo "" > $OUTPUT_FILE
+
+for file in $(find ./pass* -name "*.js" | grep -v ".spec.js" | sort); do
+  cat "$file" | grep -v require | sed 's/^exports.* = //' >> $OUTPUT_FILE
+  echo "" >> $OUTPUT_FILE
+done
+
+cat << EOF >> $OUTPUT_FILE
+
+exports.pass1 = pass1;
+exports.pass2 = pass2;
+exports.pass3 = pass3;
+
+EOF
