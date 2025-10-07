@@ -12,11 +12,11 @@ export function powerMod20Step(
   // 0^0 = 1
   // n^0 = 1
   // 1^n = 1
-  if (b.isZero) return PowerMod20Accumulator.One();
+  if (a === 1 || b.isZero) return PowerMod20Accumulator.One();
   // 0^n = 0
   if (a === 0) return PowerMod20Accumulator.Zero();
   // n^1 = n
-  if (b.isOne) return PowerMod20Accumulator.Mod20(a);
+  if (b.isOne) return PowerMod20Accumulator(a);
   const matrix = [
     [0],
     [1],
