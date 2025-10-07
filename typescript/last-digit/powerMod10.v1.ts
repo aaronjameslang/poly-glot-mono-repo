@@ -1,4 +1,4 @@
-export function exponentMod10(a: number, b: number): number {
+export function powerMod10(a: number, b: number): number {
   if (b == 0) return 1;
   switch (a % 10) {
     case 0:
