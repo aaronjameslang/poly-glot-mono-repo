@@ -1,0 +1,7 @@
+#! /bin/sh
+set -eux
+
+# Ensure you are using a recent version of bun
+# https://github.com/oven-sh/bun/issues/8913
+
+npx bun test --timeout 120
