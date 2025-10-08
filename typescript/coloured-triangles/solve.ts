@@ -37,14 +37,30 @@ export function solve(input: string): string {
       if (here === next) {
         continue;
       }
-      arr[i] = {
-        BG: "R",
-        BR: "G",
-        GB: "R",
-        GR: "B",
-        RB: "G",
-        RG: "B",
-      }[here + next]!;
+      if (here === "B" && next === "G") {
+        arr[i] = "R";
+        continue;
+      }
+      if (here === "B" && next === "R") {
+        arr[i] = "G";
+        continue;
+      }
+      if (here === "G" && next === "B") {
+        arr[i] = "R";
+        continue;
+      }
+      if (here === "G" && next === "R") {
+        arr[i] = "B";
+        continue;
+      }
+      if (here === "R" && next === "B") {
+        arr[i] = "G";
+        continue;
+      }
+      if (here === "R" && next === "G") {
+        arr[i] = "B";
+        continue;
+      }
     }
     length -= 1;
   }

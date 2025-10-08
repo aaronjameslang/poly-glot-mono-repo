@@ -1,0 +1,16 @@
+{
+  "name": "coloured-triangles",
+  "scripts": {
+    "build": "tsc ./*.ts",
+    "clean": "rm *.js",
+    "postprofile": "bun run clean",
+    "preprofile": "npm run build",
+    "profile": "0x -o stress.js",
+    "test": "bun test --timeout 120"
+  },
+  "dependencies": {
+    "0x": "^6.0.0",
+    "bun": "^1.2.23",
+    "typescript": "^5.9.3"
+  }
+}

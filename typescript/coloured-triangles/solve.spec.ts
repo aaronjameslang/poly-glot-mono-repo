@@ -1,3 +1,4 @@
+import { buildInput } from "./buildInput";
 import { solve } from "./solve";
 
 describe("coloured triangle correctness", () => {
@@ -28,16 +29,19 @@ describe("coloured triangle performance", () => {
   }
 });
 
-function buildInput(length: number): string {
-  const colours = ["R", "G", "B"];
-  let result = "";
-  for (let i = 0; i < length; i += 1) {
-    result += colours[Math.floor(Math.random() * 3)];
-  }
-  return result;
-}
-
+// # Version 1
 // For n = 1,000, t = 15ms
 // For n = 2,042, t = 61ms
 // n*2 = t*4, O(n^2) time complexity as expected
 // This is too slow
+// n = 10,000 would take 1.5s
+// n = 100,000 would take 150s = 2.5 minutes
+// Profiling showed string concatenation and object property access as slow parts
+
+// # Version 2
+// For n = 1,000, t = 3ms
+// For n = 2,042, t = 12ms
+// n*2 = t*4, O(n^2) time complexity still, but about 5x faster
+// This is still too slow
+// n = 10,000 would take 300ms
+// n = 100,000 would take 30s
