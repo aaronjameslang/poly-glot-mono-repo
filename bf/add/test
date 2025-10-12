@@ -1,0 +1,5 @@
+#! /bin/sh
+set -eux
+
+result=$(printf "!\n\$\n" | brainfuck ./*.bf)
+test "$result" = "E"
