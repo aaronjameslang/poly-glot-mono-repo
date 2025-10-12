@@ -1,0 +1,13 @@
+#! /bin/sh
+set -eux
+
+ego=$(readlink -f "$0")
+dir=$(dirname "$ego")
+cd "$dir"
+
+python3 -m venv venv
+. venv/bin/activate
+pip install pytest
+
+# python3 "$dir"/*.test.py
+pytest "$dir"/*test.py
