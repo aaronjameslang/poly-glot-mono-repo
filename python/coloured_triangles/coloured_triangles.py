@@ -5,14 +5,18 @@ to find their own solutions.
 """
 
 import math
+from functools import lru_cache
+
+LOG3 = math.log(3)
 
 
+@lru_cache(maxsize=1024)
 def solve(row: str) -> str:
     if len(row) == 1:
         return row
 
     a = math.log(len(row) - 1)
-    b = a / math.log(3)
+    b = a / LOG3
     c = math.floor(b)
     d = 3**c + 1
     e = len(row) - d + 1
