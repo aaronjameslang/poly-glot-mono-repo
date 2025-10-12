@@ -6,16 +6,16 @@ num2str() {
   printf "\\$octal"
 }
 
-inputs=(33 36)
+inputs=(3 7)
 
 actual_str=$(
   for input in "${inputs[@]}"; do
     num2str "$input"
     echo
   done |
-  brainfuck add.bf
+  brainfuck mul.bf
 )
 
 actual_num=$(printf '%d' "'$actual_str")
 
-test "$actual_num" = 69
+test "$actual_num" = 21
