@@ -1,0 +1,5 @@
+#! /bin/sh
+set -eux
+
+node gen.js
+brainfuck hello-world.bf
