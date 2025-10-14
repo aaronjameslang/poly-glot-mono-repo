@@ -1,0 +1,35 @@
+#! /bin/bash
+set -eux
+
+num2str() {
+  octal=$(printf '%03o' "$1")
+  printf "\\$octal"
+}
+
+inputs=(0)
+
+actual_str=$(
+  for input in "${inputs[@]}"; do
+    num2str "$input"
+    echo
+  done |
+  brainfuck ./*.bf
+)
+
+actual_num=$(printf '%d' "'$actual_str")
+
+test "$actual_num" = 1
+
+inputs=(1)
+
+actual_str=$(
+  for input in "${inputs[@]}"; do
+    num2str "$input"
+    echo
+  done |
+  brainfuck ./*.bf
+)
+
+actual_num=$(printf '%d' "'$actual_str")
+
+test "$actual_num" = 0
